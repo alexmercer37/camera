@@ -1,37 +1,3 @@
-// #include "../inc/pointcloud.h"
-// int main()//随机填充
-// {
-//     // 初始化点云
-//     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-
-//     // 设置点云大小
-//     cloud->points.resize(500);
-//     // cloud->width = 500;
-//     // cloud->height = 500;
-//     // cloud->points.resize(cloud->width * cloud->height);
-
-//     // 填充点云
-//     for (size_t i = 0; i < cloud->points.size(); ++i)
-//     {
-//         cloud->points[i].x = 409.6 * rand() / (RAND_MAX + 0.01f);
-//         cloud->points[i].y = 409.6 * rand() / (RAND_MAX + 0.01f);
-//         cloud->points[i].z = 409.6 * rand() / (RAND_MAX + 0.01f);
-//     }
-//     pcl::io::savePLYFile("/home/ddxy/Desktop/opencv/testcloud/source_downsampled.ply", *cloud);
-//     // 声明视窗
-//     pcl::visualization::PCLVisualizer viewer("viewer");
-//     // 设置视窗背景色
-
-//     // 预处理点云颜色
-//     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> magenta(cloud, 255, 0, 255);
-//     // 把点云加载到视窗
-//     viewer.addPointCloud(cloud, magenta, "cloud");
-//     // 设置点云大小
-//     viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "cloud");
-//     viewer.addCoordinateSystem(50);
-//     viewer.spin();
-// }
-
 #include "../inc/PCLHead.h"
 #include <pcl/surface/mls.h>
 #include <iostream>
@@ -42,8 +8,16 @@ typedef PointXYZ PointT;
 int main(void)
 {
     PointCloud<PointXYZ>::Ptr sphere(new PointCloud<PointXYZ>), source(new PointCloud<PointXYZ>);
-    io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere*.ply", *sphere);
-    // io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere5.ply", *sphere);
+
+    visualization::PCLVisualizer viewer("viewer");
+
+    int v1(0); // 创建视口v1
+    viewer.createViewPort(0.0, 0.0, 0.5, 1.0, v1);
+    io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere1.ply", *sphere);
+    viewer.addPointCloud(sphere, "sphere");
+    viewer.setPointCloudRenderingProperties(visualization::PCL_VISUALIZER_COLOR, 0.5, 0, 0.5, "sphere", v1);
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "sphere", v1);
+    viewer.addCoordinateSystem(50);
     // io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source);
     MovingLeastSquares<PointXYZ, PointNormal> mls;
     mls.setComputeNormals(true);
@@ -177,14 +151,14 @@ int main(void)
     center.x = C.x();
     center.y = C.y();
     center.z = C.z();
-
-    visualization::PCLVisualizer viewer("viewer");
-    viewer.addPointCloud(source, "source");
-    viewer.addPointCloud(sphere, "sphere");
+    int v2(0); // 创建视口v2
     viewer.addSphere(center, 5, 0, 0, 1, "center", 0);
+    viewer.createViewPort(0.5, 0.0, 1.0, 1.0, v2);
+    io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere1*.ply", *source);
+    viewer.addPointCloud(source, "source");
+    viewer.setPointCloudRenderingProperties(visualization::PCL_VISUALIZER_COLOR, 1, 0, 0, "source", v2);
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "source", v2);
     viewer.addCoordinateSystem(50);
-    viewer.setPointCloudRenderingProperties(visualization::PCL_VISUALIZER_COLOR, 0.5, 0, 0.5, "sphere");
-    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "sphere");
     while (!viewer.wasStopped())
     {
         viewer.spin();
@@ -192,3 +166,36 @@ int main(void)
 
     return 0;
 }
+// #include "../inc/pointcloud.h"
+// int main()//随机填充
+// {
+//     // 初始化点云
+//     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+
+//     // 设置点云大小
+//     cloud->points.resize(500);
+//     // cloud->width = 500;
+//     // cloud->height = 500;
+//     // cloud->points.resize(cloud->width * cloud->height);
+
+//     // 填充点云
+//     for (size_t i = 0; i < cloud->points.size(); ++i)
+//     {
+//         cloud->points[i].x = 409.6 * rand() / (RAND_MAX + 0.01f);
+//         cloud->points[i].y = 409.6 * rand() / (RAND_MAX + 0.01f);
+//         cloud->points[i].z = 409.6 * rand() / (RAND_MAX + 0.01f);
+//     }
+//     pcl::io::savePLYFile("/home/ddxy/Desktop/opencv/testcloud/source_downsampled.ply", *cloud);
+//     // 声明视窗
+//     pcl::visualization::PCLVisualizer viewer("viewer");
+//     // 设置视窗背景色
+
+//     // 预处理点云颜色
+//     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> magenta(cloud, 255, 0, 255);
+//     // 把点云加载到视窗
+//     viewer.addPointCloud(cloud, magenta, "cloud");
+//     // 设置点云大小
+//     viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "cloud");
+//     viewer.addCoordinateSystem(50);
+//     viewer.spin();
+// }

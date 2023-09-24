@@ -1,4 +1,4 @@
-#include "inc/filter.h"
+#include "../inc/filter.h"
 
 // 除去最大最小值后求平均值
 template <typename T>
@@ -35,8 +35,8 @@ L kal_fil<L>::kalman_filter()
 {
   x_last = A * x_last;
   C_last = C_last + Q;
-  kg = C_last / (C_last + R);               // 计算卡尔曼增益
-  result = x_last + kg * (input - x_last);  // 得到状态的最优化估计值
+  kg = C_last / (C_last + R);              // 计算卡尔曼增益
+  result = x_last + kg * (input - x_last); // 得到状态的最优化估计值
   x_last = result;
   C_last = (1 - kg) * C_last;
   return result;

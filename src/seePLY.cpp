@@ -32,7 +32,7 @@
 //     viewer.spin();
 // }
 
-#include "./inc/PCLHead.h"
+#include "../inc/PCLHead.h"
 #include <pcl/surface/mls.h>
 #include <iostream>
 
@@ -42,7 +42,7 @@ typedef PointXYZ PointT;
 int main(void)
 {
     PointCloud<PointXYZ>::Ptr sphere(new PointCloud<PointXYZ>), source(new PointCloud<PointXYZ>);
-    io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere10.ply", *sphere);
+    io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere*.ply", *sphere);
     // io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere5.ply", *sphere);
     // io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source);
     MovingLeastSquares<PointXYZ, PointNormal> mls;

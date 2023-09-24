@@ -32,7 +32,7 @@ include_directories(.)
 include_directories( 
     ${PCL_INCLUDE_DIRS}
 )
-add_executable(v2 src/seePLY.cpp )
+add_executable(v2 src/seePLY.cpp)
 target_link_libraries(v2 k4a::k4a)
 target_link_libraries(v2 
     ${PCL_LIBRARIES}
@@ -54,19 +54,35 @@ target_link_libraries(v3 k4a::k4a)
 target_link_libraries(v3 
     ${PCL_LIBRARIES}
 )
-# project(v4)
+project(v4)
 
-# set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
+set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
 
-# find_package(k4a REQUIRED)
-# find_package(PCL REQUIRED)
+find_package(k4a REQUIRED)
+find_package(PCL REQUIRED)
 
-# include_directories(.)
-# include_directories( 
-#     ${PCL_INCLUDE_DIRS}
-# )
-# add_executable(v4 src/twoPointCloudCompare.cpp )
-# target_link_libraries(v4 k4a::k4a)
-# target_link_libraries(v4 
-#     ${PCL_LIBRARIES}
-# )
+include_directories(.)
+include_directories( 
+    ${PCL_INCLUDE_DIRS}
+)
+add_executable(v4 src/twoPointCloudCompare.cpp )
+target_link_libraries(v4 k4a::k4a)
+target_link_libraries(v4 
+    ${PCL_LIBRARIES}
+)
+project(v5)
+
+set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
+
+find_package(k4a REQUIRED)
+find_package(PCL REQUIRED)
+
+include_directories(.)
+include_directories( 
+    ${PCL_INCLUDE_DIRS}
+)
+add_executable(v5 src/pclNormalization.cpp )
+target_link_libraries(v5 k4a::k4a)
+target_link_libraries(v5 
+    ${PCL_LIBRARIES}
+)

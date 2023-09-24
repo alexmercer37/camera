@@ -1,16 +1,9 @@
-#include "inc/cameraGyro.h"
+#include "../inc/cameraGyro.h"
 
 using namespace std;
 
 kinectGyro::kinectGyro()
-  : zero_arry_number(0)
-  , zero_arry_add(0.0)
-  , zero_point(0)
-  , first_zero_flag(0)
-  , angle(0.0)
-  , zero_arry_now_position(0)
-  , gyro_data_arry_position(0)
-  , now_gyro_v_data(0.0)
+    : zero_arry_number(0), zero_arry_add(0.0), zero_point(0), first_zero_flag(0), angle(0.0), zero_arry_now_position(0), gyro_data_arry_position(0), now_gyro_v_data(0.0)
 {
   comb_filter = new comb_fil<float>();
   kal_filter = new kal_fil<float>(0.005, 0.0001);
@@ -28,7 +21,7 @@ void kinectGyro::updateZeroPoint()
   }
 }
 
-void kinectGyro::recieveGyroData(const k4a_imu_sample_t* imu_data)
+void kinectGyro::recieveGyroData(const k4a_imu_sample_t *imu_data)
 {
   // 零点数据
   if (zero_arry_number < zero_arry_maxsize)
@@ -66,19 +59,19 @@ void kinectGyro::dealGyroData()
   // 滤波
   kal_filter->input = comb_filter->combination_filter();
   now_gyro_v_data = kal_filter->kalman_filter();
-  if (now_gyro_v_data > gyro_zero_thread || now_gyro_v_data < 0)  // 数据有效
+  if (now_gyro_v_data > gyro_zero_thread || now_gyro_v_data < 0) // 数据有效
   {
     if (now_gyro_v_data > 0)
-      angle += (double)(0.01 * now_gyro_v_data * 180.0f / PI * 2.175336);  // 1.07619
+      angle += (double)(0.01 * now_gyro_v_data * 180.0f / PI * 2.175336); // 1.07619
     else
-      angle += (double)(0.01 * now_gyro_v_data * 180.0f / PI * 2.206139);  // 1.0956
+      angle += (double)(0.01 * now_gyro_v_data * 180.0f / PI * 2.206139); // 1.0956
     if (angle > 360)
       angle -= 360;
     else if (angle < -360)
       angle += 360;
     cout << angle << endl;
   }
-  else  // 用于更新零点
+  else // 用于更新零点
   {
     updateZeroPoint();
   }

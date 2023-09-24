@@ -81,11 +81,11 @@ void lcloud::getPLY()
   // cout << "下采样：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
 
   getMinMax3D(*source_downsampled, min_pt, max_pt);
-  // if (source_downsampled->size() < 70 || max_pt(1) < 40)
-  // {
-  //   cout << "下采样点云数目太少" << endl;
-  //   return;
-  // }
+  if (source_downsampled->size() < 70 || max_pt(1) < 40)
+  {
+    cout << "下采样点云数目太少" << endl;
+    return;
+  }
 
   start = clock();
   sor.setInputCloud(source_downsampled);
@@ -96,7 +96,7 @@ void lcloud::getPLY()
   // cout << "去除离群点：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
   if (source_downsampled->size() < 30)
   {
-    // cout << "去离群和直通滤波后点云数目太少" << endl;
+    cout << "去离群和直通滤波后点云数目太少" << endl;
     return;
   }
 

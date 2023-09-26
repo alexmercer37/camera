@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     PointCloudT::Ptr cloud_in(new PointCloudT);  // 初始点云
     PointCloudT::Ptr cloud_tr(new PointCloudT);  // 转换点云
     PointCloudT::Ptr cloud_icp(new PointCloudT); // 输出点云
-    pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere.ply", *cloud_in);
+    pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere21*.ply", *cloud_in);
 
     int iterations = 1; // 默认ICP配准的迭代次数
     if (argc > 2)
@@ -154,4 +154,5 @@ int main(int argc, char *argv[])
         next_iteration = false;
     }
     return (0);
+    pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere21*.ply", *cloud_icp);
 }

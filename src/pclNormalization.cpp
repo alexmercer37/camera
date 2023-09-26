@@ -9,7 +9,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr normialize(pcl::PointCloud<pcl::PointXYZ>::P
 int main(int argc, char **argv)
 {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    if (pcl::io::loadPLYFile<pcl::PointXYZ>("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere9.ply", *cloud) == -1) //*打开点云文件
+    if (pcl::io::loadPLYFile<pcl::PointXYZ>("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere**.ply", *cloud) == -1) //*打开点云文件
     {
         PCL_ERROR("Couldn't read ply\n");
         return (-1);
@@ -19,9 +19,9 @@ int main(int argc, char **argv)
     //      << "/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere10.ply" << endl;
     //    normialize(cloud,findMaxAndMin(cloud));
 
-    vector<Point> p = findMaxAndMin(cloud);                                                              // 输入点云的最值点
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_n(new pcl::PointCloud<pcl::PointXYZ>);                     // 存储归一化之后的点云
-    cloud_n = normialize(cloud, p, "/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere9.ply"); // 归一化
+    vector<Point> p = findMaxAndMin(cloud);                                                               // 输入点云的最值点
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_n(new pcl::PointCloud<pcl::PointXYZ>);                      // 存储归一化之后的点云
+    cloud_n = normialize(cloud, p, "/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere**.ply"); // 归一化
 
     cout << "\nafter normalized:" << endl;
     // vector<Point> p_ = findMaxAndMin(cloud_n); // 归一化点云之后的最值点
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     {
         viewer.spin();
     }
-    pcl::io::savePLYFile<pcl::PointXYZ>("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere9*.ply", *cloud_n);
+    pcl::io::savePLYFile<pcl::PointXYZ>("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere**.ply", *cloud_n);
     return 0;
 }
 

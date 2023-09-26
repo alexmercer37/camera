@@ -141,7 +141,7 @@ void lcloud::getPLY()
     if (count == 18)
     {
       pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source_downsampled);
-      pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere10.ply", *sphere);
+      pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere11.ply", *sphere);
       cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
       cout << "保存成功" << endl;
     }

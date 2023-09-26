@@ -18,20 +18,18 @@ struct PLY
 {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
     std::string f_name;
-    PLY() : cloud(new pcl::PointCloud<pcl::PointXYZ>)
-    {
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere1.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere2.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere3.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere4.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere5.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere6.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere7.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere8.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere9.ply", *cloud);
-        pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere10.ply", *cloud);
-    };
+    PLY() : cloud(new pcl::PointCloud<pcl::PointXYZ>){
+
+                // f_name = "/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere2*.ply";
+                // f_name = pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere3*.ply", *cloud);
+                // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere4*.ply", *cloud);
+                // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere5*.ply", *cloud);
+                // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere6*.ply", *cloud);
+                // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere7*.ply", *cloud);
+                // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere8*.ply", *cloud);
+                // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere9*.ply", *cloud);
+                // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere10*.ply", *cloud);
+            };
 };
 
 /* 以< x, y, z, curvature >形式定义一个新的点 */
@@ -112,14 +110,15 @@ void loadData(int argc, char **argv, std::vector<PLY, Eigen::aligned_allocator<P
         if (fname.compare(fname.size() - extension.size(), extension.size(), extension) == 0)
         {
             PLY m;
-            m.f_name = argv[i];
-            pcl::io::loadPLYFile(argv[i], *m.cloud);
-            if (pcl::io::loadPLYFile(argv[i], *m.cloud) == -1) // 取点云
-            {
-                // 没有读到  输出信息
-                std::cout << "路径不对,没读到pcd文件:  " << argv[i] << std::endl;
-                continue; // 跳出本次循环
-            }
+            // m.f_name = argv[i];
+            // pcl::io::loadPLYFile(argv[i], *m.cloud);
+            pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere2*.ply", *m.cloud);
+            // if (pcl::io::loadPLYFile(argv[i], *m.cloud) == -1) // 取点云
+            // {
+            //     // 没有读到  输出信息
+            //     std::cout << "路径不对,没读到pcd文件:  " << argv[i] << std::endl;
+            //     continue; // 跳出本次循环
+            // }
 
             std::vector<int> indices;
             pcl::removeNaNFromPointCloud(*m.cloud, *m.cloud, indices); // 从点云中移除NAN点
@@ -139,21 +138,41 @@ void pairAlign(const PointCloud::Ptr cloud_src, const PointCloud::Ptr cloud_tgt,
     /* 下采样 */
     PointCloud::Ptr src(new PointCloud);
     PointCloud::Ptr tgt(new PointCloud);
-    pcl::VoxelGrid<PointT> grid;
-
-    if (downsample)
+    // pcl::VoxelGrid<PointT> grid;
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere20*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere5.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere3*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testclooud/sphere5*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere6*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere7*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere8.ply", *src);
+    pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere9*.ply", *src);
+    pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere10*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere15*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere16*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere17*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/tesud/sphere4*.ply", *src);
+    // pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcltcloud/sphere18*.ply", *src);
+    pcl::io::loadPLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere**.ply", *tgt);
+    std::vector<PLY, Eigen::aligned_allocator<PLY>> data;
+    for (size_t i = 1; i < data.size(); ++i)
     {
-        grid.setLeafSize(0.05, 0.05, 0.05);
-        grid.setInputCloud(cloud_src);
-        grid.filter(*src);
-        grid.setInputCloud(cloud_tgt);
-        grid.filter(*tgt);
+        src = data[i - 1].cloud;
+        tgt = data[i].cloud;
     }
-    else
-    {
-        src = cloud_src;
-        tgt = cloud_tgt;
-    }
+    // if (downsample)
+    // {
+    // grid.setLeafSize(0.05, 0.05, 0.05);
+    // grid.setInputCloud(cloud_src);
+    // grid.filter(*src);
+    // grid.setInputCloud(cloud_tgt);
+    // grid.filter(*tgt);
+    // }
+    // else
+    // {
+    //     src = cloud_src;
+    //     tgt = cloud_tgt;
+    // }
 
     /* 计算曲面法线和曲率 */
     PointCloudWithNormals::Ptr points_with_normals_src(new PointCloudWithNormals);
@@ -200,65 +219,66 @@ void pairAlign(const PointCloud::Ptr cloud_src, const PointCloud::Ptr cloud_tgt,
             reg.setMaxCorrespondenceDistance(reg.getMaxCorrespondenceDistance() - 0.001);
             prev = reg.getLastIncrementalTransformation();
         }
-
-        // showCloudsRight(points_with_normals_tgt, points_with_normals_src); // 可视化当前状态
+        pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere21*.ply", *points_with_normals_src);
+        // pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere12*.ply", *points_with_normals_tgt);
+        showCloudsRight(points_with_normals_tgt, points_with_normals_src); // 可视化当前状态
     }
 
-    targetToSource = Ti.inverse(); // 得到目标点云到源点云的变换
+    // targetToSource = Ti.inverse(); // 得到目标点云到源点云的变换
 
-    /* 把目标点云转换回源框架 */
-    pcl::transformPointCloud(*cloud_tgt, *output, targetToSource);
-    viewer.removePointCloud("source");
-    viewer.removePointCloud("target");
-    PointCloudColorHandlerCustom<PointT> cloud_tgt_h(output, 0, 255, 0);
-    PointCloudColorHandlerCustom<PointT> cloud_src_h(cloud_src, 255, 0, 0);
-    viewer.addPointCloud(output, cloud_tgt_h, "target", vp_2);
-    viewer.addPointCloud(cloud_src, cloud_src_h, "source", vp_2);
-    PCL_INFO("Press q to continue the registration.\n");
-    viewer.spin();
-    viewer.removePointCloud("source");
-    viewer.removePointCloud("target");
+    // // /* 把目标点云转换回源框架 */
+    // pcl::transformPointCloud(*cloud_tgt, *output, targetToSource);
+    // viewer.removePointCloud("source");
+    // viewer.removePointCloud("target");
+    // PointCloudColorHandlerCustom<PointT> cloud_tgt_h(output, 0, 255, 0);
+    // PointCloudColorHandlerCustom<PointT> cloud_src_h(cloud_src, 255, 0, 0);
+    // viewer.addPointCloud(output, cloud_tgt_h, "target", vp_2);
+    // viewer.addPointCloud(cloud_src, cloud_src_h, "source", vp_2);
+    // // PCL_INFO("Press q to continue the registration.\n");
+    // viewer.spin();
+    // viewer.removePointCloud("source");
+    // viewer.removePointCloud("target");
 
-    /* 添加源点云到转换目标 */
-    *output += *cloud_src;
-    final_transform = targetToSource;
+    // /* 添加源点云到转换目标 */
+    // *output += *cloud_src;
+    // final_transform = targetToSource;
 }
 
 int main(int argc, char **argv)
 {
     /* 加载数据 */
-    std::vector<PLY, Eigen::aligned_allocator<PLY>> data;
-    loadData(argc, argv, data);
-    if (data.empty())
-    {
-        PCL_ERROR("Syntax is: %s <source.ply> <target.ply> [*]", argv[0]);
-        PCL_ERROR("[*] - multiple files can be added. The registration results of (i, i+1) will be registered against (i+2), etc");
-        return (-1);
-    }
-    PCL_INFO("Loaded %d datasets.", (int)data.size());
+    // std::vector<PLY, Eigen::aligned_allocator<PLY>> data;
+    // loadData(argc, argv, data);
+    // if (data.empty())
+    // {
+    //     PCL_ERROR("Syntax is: %s <source.ply> <target.ply> [*]", argv[0]);
+    //     PCL_ERROR("[*] - multiple files can be added. The registration results of (i, i+1) will be registered against (i+2), etc");
+    //     return (-1);
+    // }
+    // PCL_INFO("Loaded %d datasets.", (int)data.size());
     /* 创建一个PCL可视化对象 */
     // viewer = new pcl::visualization::PCLVisualizer(argc, argv, "Pairwise Incremental Registration example");
+    PointCloud::Ptr result(new PointCloud), source, target;
     viewer.createViewPort(0.0, 0, 0.5, 1.0, vp_1);
     viewer.createViewPort(0.5, 0, 1.0, 1.0, vp_2);
-    PointCloud::Ptr result(new PointCloud), source, target;
     Eigen::Matrix4f GlobalTransform = Eigen::Matrix4f::Identity(), pairTransform;
-    for (size_t i = 1; i < data.size(); ++i)
+
+    /* 添加可视化数据 */
+    // showCloudsLeft(source, target);
+    PointCloud::Ptr temp(new PointCloud);
+    // PCL_INFO("Aligning %s (%d) with %s (%d).\n", data[i - 1].f_name.c_str(), source->points.size(), data[i].f_name.c_str(), target->points.size());
+    pairAlign(source, target, temp, pairTransform, true);
+
+    // pcl::transformPointCloud(*temp, *result, GlobalTransform); // 把当前的两两配对转换到全局变换
+    // GlobalTransform = pairTransform * GlobalTransform;         // 更新全局变换
+
+    /* 保存配准对，转换到第一个点云框架中 */
+    // std::stringstream ss;
+    // ss << i << ".pcd";
+    // pcl::io::savePLYFile(ss.str(), *result, true);
+    // }
+    while (!viewer.wasStopped())
     {
-        source = data[i - 1].cloud;
-        target = data[i].cloud;
-
-        /* 添加可视化数据 */
-        // showCloudsLeft(source, target);
-        PointCloud::Ptr temp(new PointCloud);
-        PCL_INFO("Aligning %s (%d) with %s (%d).\n", data[i - 1].f_name.c_str(), source->points.size(), data[i].f_name.c_str(), target->points.size());
-        pairAlign(source, target, temp, pairTransform, true);
-
-        pcl::transformPointCloud(*temp, *result, GlobalTransform); // 把当前的两两配对转换到全局变换
-        GlobalTransform = pairTransform * GlobalTransform;         // 更新全局变换
-
-        /* 保存配准对，转换到第一个点云框架中 */
-        std::stringstream ss;
-        ss << i << ".pcd";
-        pcl::io::savePLYFile(ss.str(), *result, true);
+        viewer.spin();
     }
 }

@@ -45,6 +45,7 @@ void lcloud::getXYZPointCloud(const k4a::transformation &k4aTransformation, cons
     point.y = xyzImageData[3 * i + 1];
     point.z = xyzImageData[3 * i + 2];
     source->points.push_back(point);
+    io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source.ply", *source);
   }
 
   pointCloud.reset();
@@ -149,6 +150,8 @@ void lcloud::getPLY()
     extract.filter(*cloudT);
     cout << sphere->size() << endl;
     writer.write<PointXYZ>("*sphere" + to_string(i) + ".ply", *sphere, false);
+    cout << to_string(i) << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
+    cout << "保存成功" << endl;
     i++;
     *source_downsampled = *cloudT;
     // count++;
@@ -156,7 +159,7 @@ void lcloud::getPLY()
     // {
     //   pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source_downsampled);
     //   pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere11.ply", *sphere);
-    //   cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
+    // cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
     //   cout << "保存成功" << endl;
     // }
   }

@@ -14,6 +14,7 @@ private:
     pcl::PointCloud<pcl::PointXYZ>::Ptr source_downsampled;
     pcl::PointCloud<pcl::Normal>::Ptr cloud_normals;
     pcl::PointCloud<pcl::PointXYZ>::Ptr sphere;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudT;
     pcl::PointCloud<pcl::PointXYZ>::Ptr sphere_sample;
     pcl::ConditionalRemoval<pcl::PointXYZ> filt;
     pcl::VoxelGrid<pcl::PointXYZ> vg;

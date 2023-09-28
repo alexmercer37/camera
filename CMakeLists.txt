@@ -7,6 +7,7 @@ find_package(k4a REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(PCL REQUIRED)
 
+
 include_directories(.)
 include_directories( 
     ${PCL_INCLUDE_DIRS}
@@ -15,6 +16,7 @@ include_directories(
 # OpenCV_LIBS和PCL_LIBRARIES，是否缩写是有区别的
 aux_source_directory(./src SRC_LIST)
 add_executable(v1 src/camera.cpp src/pointcloud.cpp)
+
 target_link_libraries(v1 k4a::k4a)
 target_link_libraries(v1 
     ${OpenCV_LIBS}   
@@ -86,3 +88,27 @@ target_link_libraries(v5 k4a::k4a)
 target_link_libraries(v5 
     ${PCL_LIBRARIES}
 )
+
+# project(v1.1)
+
+# set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
+
+# find_package(k4a REQUIRED)
+# find_package(OpenCV REQUIRED)
+# find_package(PCL REQUIRED)
+
+
+# include_directories(.)
+# include_directories( 
+#     ${PCL_INCLUDE_DIRS}
+#     ${OpenCV_INCLUDE_DIRS}
+# )
+# # OpenCV_LIBS和PCL_LIBRARIES，是否缩写是有区别的
+# aux_source_directory(./src SRC_LIST)
+# add_executable(v1.1 src/camera.cpp src/ros.cpp)
+
+# target_link_libraries(v1.1 k4a::k4a)
+# target_link_libraries(v1.1 
+#     ${OpenCV_LIBS}   
+#     ${PCL_LIBRARIES}
+# )

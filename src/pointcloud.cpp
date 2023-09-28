@@ -8,6 +8,7 @@ lcloud::lcloud()
   source = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
   source_downsampled = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
   sphere = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+  cloudT = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
   cloud_normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
   inliers_sphere = std::make_shared<pcl::PointIndices>();
   coefficients_sphere = std::make_shared<pcl::ModelCoefficients>();
@@ -57,6 +58,7 @@ void lcloud::getPLY()
   Eigen::Vector4f min_pt;
   Eigen::Vector4f centroid;
   clock_t start, end;
+  pcl::PLYWriter writer;
 
   ConditionAnd<PointXYZ>::Ptr range_cond(new ConditionAnd<PointXYZ>()); // 所有条件都满足（or为满足一个即可）
   range_cond->addComparison(pcl::FieldComparison<pcl::PointXYZ>::Ptr(new pcl::FieldComparison<pcl::PointXYZ>("y", pcl::ComparisonOps::LT, 200.0)));
@@ -127,24 +129,36 @@ void lcloud::getPLY()
   // cout << "过滤球体：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
 
   // 循环分割多个球体
-  for (int i = 0; i < 3; i++)
+  int i = 0, nr_points = source_downsampled->points.size();
+  while (source_downsampled->points.size() > 0.1 * nr_points)
   {
     seg.setInputCloud(source_downsampled);
     seg.setInputNormals(cloud_normals);
     seg.segment(*inliers_sphere, *coefficients_sphere);
+    if (inliers_sphere->indices.size() == 0)
+    {
+      cout << "could not remove " << endl;
+      break;
+    }
     extract.setInputCloud(source_downsampled);
     extract.setIndices(inliers_sphere);
     extract.setNegative(false);
     extract.filter(*sphere);
+
+    extract.setNegative(true);
+    extract.filter(*cloudT);
+    cout << sphere->size() << endl;
+    writer.write<PointXYZ>("*sphere" + to_string(i) + ".ply", *sphere, false);
     i++;
-    count++;
-    if (count == 18)
-    {
-      pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source_downsampled);
-      pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere11.ply", *sphere);
-      cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
-      cout << "保存成功" << endl;
-    }
+    *source_downsampled = *cloudT;
+    // count++;
+    // if (count == 18)
+    // {
+    //   pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source_downsampled);
+    //   pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere11.ply", *sphere);
+    //   cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
+    //   cout << "保存成功" << endl;
+    // }
   }
 
   if (sphere->size() < 20)
@@ -158,6 +172,8 @@ void lcloud::clearCloud()
   source->clear();
   source_downsampled->clear();
   cloud_normals->clear();
+  sphere->clear();
+  cloudT->clear();
   inliers_sphere->header.frame_id.clear();
   inliers_sphere->indices.clear();
   coefficients_sphere->header.frame_id.clear();

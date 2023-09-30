@@ -22,8 +22,7 @@ void lcloud::getMaskAccordingToColor(const Mat &cv_rgbimg, Mat &mask)
   // inRange(hsvImage, Scalar(0, 43, 46), Scalar(10, 255, 255), mask);
 }
 // 深度图转点云
-void lcloud::getXYZPointCloud(const k4a::transformation &k4aTransformation, const k4a::calibration &k4aCalibration,
-                              const Mat &cv_depthimg)
+void lcloud::getXYZPointCloud(const k4a::transformation &k4aTransformation, const k4a::calibration &k4aCalibration, const Mat &cv_depthimg)
 {
   k4a::image depthImage{nullptr};
   k4a::image xyzImage{nullptr};
@@ -45,7 +44,7 @@ void lcloud::getXYZPointCloud(const k4a::transformation &k4aTransformation, cons
     point.y = xyzImageData[3 * i + 1];
     point.z = xyzImageData[3 * i + 2];
     source->points.push_back(point);
-    io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source.ply", *source);
+    // io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source.ply", *source);
   }
 
   pointCloud.reset();
@@ -72,7 +71,7 @@ void lcloud::getPLY()
   filt.filter(*source_downsampled);
   if (source_downsampled->size() < 100)
   {
-    cout << "点云数目太少" << endl;
+    // cout << "点云数目太少" << endl;
     return;
   }
 
@@ -86,7 +85,7 @@ void lcloud::getPLY()
   getMinMax3D(*source_downsampled, min_pt, max_pt);
   if (source_downsampled->size() < 70 || max_pt(1) < 40)
   {
-    cout << "下采样点云数目太少" << endl;
+    // cout << "下采样点云数目太少" << endl;
     return;
   }
 
@@ -99,7 +98,7 @@ void lcloud::getPLY()
   // cout << "去除离群点：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
   if (source_downsampled->size() < 30)
   {
-    cout << "去离群和直通滤波后点云数目太少" << endl;
+    // cout << "去离群和直通滤波后点云数目太少" << endl;
     return;
   }
 
@@ -133,6 +132,7 @@ void lcloud::getPLY()
   int i = 0, nr_points = source_downsampled->points.size();
   while (source_downsampled->points.size() > 0.1 * nr_points)
   {
+    start = clock();
     seg.setInputCloud(source_downsampled);
     seg.setInputNormals(cloud_normals);
     seg.segment(*inliers_sphere, *coefficients_sphere);
@@ -149,19 +149,14 @@ void lcloud::getPLY()
     extract.setNegative(true);
     extract.filter(*cloudT);
     cout << sphere->size() << endl;
-    writer.write<PointXYZ>("*sphere" + to_string(i) + ".ply", *sphere, false);
-    cout << to_string(i) << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
+    writer.write<PointXYZ>("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/SPHERE" + to_string(i) + ".ply", *sphere, false);
+    cout  << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
     cout << "保存成功" << endl;
     i++;
     *source_downsampled = *cloudT;
+    end = clock();
+    cout << "过滤球体：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
     // count++;
-    // if (count == 18)
-    // {
-    //   pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source_downsampled);
-    //   pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere11.ply", *sphere);
-    // cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
-    //   cout << "保存成功" << endl;
-    // }
   }
 
   if (sphere->size() < 20)
@@ -169,6 +164,14 @@ void lcloud::getPLY()
     cout << "球体点云数量太少" << endl;
     return;
   }
+  // if (count == 18)
+  // {
+  // // pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source_downsampled);
+  //   pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/sphere22.ply", *sphere);
+  // cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
+  //   cout << "保存成功" << endl;
+  // }
+
 }
 void lcloud::clearCloud()
 {

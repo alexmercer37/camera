@@ -104,7 +104,7 @@ int main(int argc, char const *argv[])
       // end = clock();
       // cout << "获取点云：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
       start = clock();
-      // cloud->getPLY();
+      cloud->getPLY();
       end = clock();
       // cout << "球体：" << (double)(end - start) / CLOCKS_PER_SEC << endl
       //  << endl;

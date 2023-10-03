@@ -1,59 +1,37 @@
+
 #include "../inc/opencv.h"
-int main()
 
+void cameraCV::getContour(cv::Mat &input, cv::Mat &output)
 {
-	cv::Mat input, color, gray, hsv, median, gauss, average, dilate, erode, harrisNorm, harris, canny;
-	input = cv::imread("../images/sea.png");
-	if (input.empty())
+	cv::medianBlur(input, median, 3);
+	cv::cvtColor(median, gray, cv::COLOR_BGRA2GRAY);
+	cv::Laplacian(gray, laplacian, 3, 3);				// laplacian算子提取轮廓
+	cv::convertScaleAbs(laplacian, lap8BitFrame);		// 将图片压缩为8位
+	cv::Canny(lap8BitFrame, output, 50, 150, 3, false); // canny提取轮廓
+}
+
+void cameraCV::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
+{
+	cv::Mat dilate;
+	mask = cv::Mat::zeros(input.size(), CV_8UC1);
+	cv::cvtColor(input, input, cv::COLOR_BGR2HSV); // error
+	cv::inRange(input, cv::Scalar(hLow, sLow, vLow), cv::Scalar(hHigh, sHigh, vHigh), mask);
+	cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5)); // 设置结构元
+	cv::morphologyEx(mask, mask, cv::MORPH_OPEN, element);						 // 开操作
+	cv::morphologyEx(mask, mask, cv::MORPH_CLOSE, element);						 // 闭操作
+	input.copyTo(output, mask);
+	cv::imshow("mask", mask);
+}
+
+void cameraCV::detectStraightLine(cv::Mat &contour, std::vector<cv::Vec4f> &plines, cv::Mat &output)
+{
+	cv::HoughLinesP(
+		contour, plines, 1, CV_PI / 180, 300, 200,
+		40); // 霍夫直线检测，参数：8位单通道图像，cv::Vec4f,rho,theta,最小的直线长度，两段直线认为是一根直线的最小的距离
+	for (size_t i = 0; i < plines.size(); i++)
 	{
-		std::cout << "Can not read image" << std::endl;
-		return 0;
-	}
-	color = input;
-
-	//
-	cv::imshow("color", color);
-	cv::waitKey(0);
-	return 0;
-	//
-	cv::imwrite("color", color);
-	//
-
-	cv::cvtColor(color, gray, cv::COLOR_RGB2GRAY);
-	cv::cvtColor(color, hsv, cv::COLOR_RGB2HSV);
-	imshow("gray", gray);
-	imshow("hsv", hsv);
-	//
-	cv::GaussianBlur(color, gauss, cv::Size(5, 5), 1, 1);
-	cv::medianBlur(color, median, 5);
-	cv::blur(color, average, cv::Size(3, 3), cv::Point(-1, -1));
-
-	cv::imshow("blur", average);
-	cv::imshow("gauss", gauss);
-	cv::imshow("median", median);
-
-	//
-	cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
-	cv::dilate(input, dilate, element);
-	cv::erode(input, erode, element);
-	cv::imshow("dilate", dilate);
-	cv::imshow("erode", erode);
-
-	//
-	cv::Canny(gray, canny, 10, 100);
-	cv::imshow("canny", canny);
-	//
-	cv::cornerHarris(gray, harris, 2, 3, 0.04);
-	cv::normalize(harris, harrisNorm, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-
-	for (size_t row = 0; row < color.rows; row++)
-	{
-		for (size_t col = 0; col < color.cols; col++)
-		{
-			int rsp = harrisNorm.at<uchar>(row, col);
-			if (rsp > 150)
-				cv::circle(color, cv::Point(row, col), 5, cv::Scalar(0, 0, 255), 1);
-			// cv::circle(color,cv::Point(col,row),3, cv::Scalar(255,10,10),1);
-		}
+		cv::Vec4f hlines = plines[i];
+		cv::line(output, cv::Point(hlines[0], hlines[1]), cv::Point(hlines[2], hlines[3]), cv::Scalar(255, 0, 0), 3,
+				 cv::LINE_AA);
 	}
 }

@@ -1,27 +1,76 @@
 cmake_minimum_required(VERSION 3.16)
-project(v1)
-
-set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
-
-find_package(k4a REQUIRED)
-find_package(OpenCV REQUIRED)
-find_package(PCL REQUIRED)
-
 
 include_directories(.)
-include_directories( 
-    ${PCL_INCLUDE_DIRS}
-    ${OpenCV_INCLUDE_DIRS}
-)
-# OpenCV_LIBS和PCL_LIBRARIES，是否缩写是有区别的
-aux_source_directory(./src SRC_LIST)
-add_executable(v1 src/camera.cpp src/pointcloud.cpp)
 
-target_link_libraries(v1 k4a::k4a)
-target_link_libraries(v1 
-    ${OpenCV_LIBS}   
-    ${PCL_LIBRARIES}
+project(camera)
+
+option(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
+set(CMAKE_BUILD_TYPE Debug)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/workspace)
+set(CMAKE_CXX_STANDARD 14)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x")
+set(CUDA_GEN_CODE "-gencode=arch=compute_75,code=sm_75")
+
+set(PROTOBUF_DIR "/home/ddxy/Downloads/protobuf-3.11.4")
+
+# 建议cuda10.2以上
+set(CUDA_DIR     "/usr/local/cuda-12.2")
+
+# 需要与cuda、tensorRT配对
+set(CUDNN_DIR    "/usr/local/cuda")
+set(TENSORRT_DIR "/home/ddxy/opt/TensorRT-8.6.1.6")
+
+find_package(CUDA REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(PCL REQUIRED)
+find_package(k4a REQUIRED)
+
+include_directories(
+    ${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/src/application
+    ${PROJECT_SOURCE_DIR}/src/tensorRT
+    ${PROJECT_SOURCE_DIR}/src/tensorRT/common    
+    ${PCL_INCLUDE_DIRS} 
+    ${OpenCV_INCLUDE_DIRS}
+    ${CUDA_DIR}/include
+    ${PROTOBUF_DIR}/include
+    ${TENSORRT_DIR}/include
+    ${CUDNN_DIR}/include
+    )
+link_directories(
+    ${PCL_LIBRARY_DIRS} 
+    ${OpenCV_LIBS_DIRS}
+    ${PROTOBUF_DIR}/lib
+    ${CUDA_DIR}/lib64
+    ${CUDNN_DIR}/lib
+    ${TENSORRT_DIR}/lib
+    )
+add_definitions(${PCL_DEFINITIONS} ${OpenCV_DEFINITIONS})
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -O0 -Wfatal-errors -pthread -w -g")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11 -O0 -Xcompiler -fPIC -g -w ${CUDA_GEN_CODE}")
+file(GLOB_RECURSE cpp_srcs ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE cuda_srcs ${PROJECT_SOURCE_DIR}/src/*.cu)
+cuda_add_library(plugin_list SHARED ${cuda_srcs})
+
+add_executable(camera ${cpp_srcs})
+# add_executable(selectColor src/camera.cpp src/selectColor.cpp)
+# add_executable(seePLY src/camera.cpp src/seePLY.cpp)
+
+target_link_libraries(camera ${PCL_LIBRARIES} ${OpenCV_LIBS} k4a::k4a)
+target_link_libraries(camera nvinfer nvinfer_plugin)
+target_link_libraries(camera cuda cublas cudart cudnn)
+target_link_libraries(camera protobuf pthread plugin_list)
+# target_link_libraries(selectColor ${PCL_LIBRARIES} ${OpenCV_LIBS} k4a::k4a)
+# target_link_libraries(seePLY ${PCL_LIBRARIES} ${OpenCV_LIBS} k4a::k4a)
+
+add_custom_target(
+        yolo
+        DEPENDS camera
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/workspace
+        COMMAND ./camera yolo
 )
+
 # 查看点云
 project(v2)
 
@@ -39,76 +88,3 @@ target_link_libraries(v2 k4a::k4a)
 target_link_libraries(v2 
     ${PCL_LIBRARIES}
 )
-# # 点云配准
-project(v3)
-
-set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
-
-find_package(k4a REQUIRED)
-find_package(PCL REQUIRED)
-
-include_directories(.)
-include_directories( 
-    ${PCL_INCLUDE_DIRS}
-)
-add_executable(v3 src/CloudCompare.cpp )
-target_link_libraries(v3 k4a::k4a)
-target_link_libraries(v3 
-    ${PCL_LIBRARIES}
-)
-project(v4)
-
-set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
-
-find_package(k4a REQUIRED)
-find_package(PCL REQUIRED)
-
-include_directories(.)
-include_directories( 
-    ${PCL_INCLUDE_DIRS}
-)
-add_executable(v4 src/twoPointCloudCompare.cpp )
-target_link_libraries(v4 k4a::k4a)
-target_link_libraries(v4 
-    ${PCL_LIBRARIES}
-)
-project(v5)
-
-set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
-
-find_package(k4a REQUIRED)
-find_package(PCL REQUIRED)
-
-include_directories(.)
-include_directories( 
-    ${PCL_INCLUDE_DIRS}
-)
-add_executable(v5 src/pclNormalization.cpp )
-target_link_libraries(v5 k4a::k4a)
-target_link_libraries(v5 
-    ${PCL_LIBRARIES}
-)
-
-# project(v1.1)
-
-# set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
-
-# find_package(k4a REQUIRED)
-# find_package(OpenCV REQUIRED)
-# find_package(PCL REQUIRED)
-
-
-# include_directories(.)
-# include_directories( 
-#     ${PCL_INCLUDE_DIRS}
-#     ${OpenCV_INCLUDE_DIRS}
-# )
-# # OpenCV_LIBS和PCL_LIBRARIES，是否缩写是有区别的
-# aux_source_directory(./src SRC_LIST)
-# add_executable(v1.1 src/camera.cpp src/ros.cpp)
-
-# target_link_libraries(v1.1 k4a::k4a)
-# target_link_libraries(v1.1 
-#     ${OpenCV_LIBS}   
-#     ${PCL_LIBRARIES}
-# )

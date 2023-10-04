@@ -1,7 +1,7 @@
 
 #include "../inc/opencv.h"
 
-void opencv::getContour(cv::Mat &input, cv::Mat &output)
+void cameraCV::getContour(cv::Mat &input, cv::Mat &output)
 {
 	cv::medianBlur(input, median, 3);
 	cv::cvtColor(median, gray, cv::COLOR_BGRA2GRAY);
@@ -10,7 +10,7 @@ void opencv::getContour(cv::Mat &input, cv::Mat &output)
 	cv::Canny(lap8BitFrame, output, 50, 150, 3, false); // canny提取轮廓
 }
 
-void opencv::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
+void cameraCV::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
 {
 	cv::Mat dilate;
 	mask = cv::Mat::zeros(input.size(), CV_8UC1);
@@ -23,7 +23,7 @@ void opencv::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
 	cv::imshow("mask", mask);
 }
 
-void opencv::detectStraightLine(cv::Mat &contour, std::vector<cv::Vec4f> &plines, cv::Mat &output)
+void cameraCV::detectStraightLine(cv::Mat &contour, std::vector<cv::Vec4f> &plines, cv::Mat &output)
 {
 	cv::HoughLinesP(
 		contour, plines, 1, CV_PI / 180, 300, 200,

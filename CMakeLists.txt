@@ -54,7 +54,8 @@ file(GLOB_RECURSE cuda_srcs ${PROJECT_SOURCE_DIR}/src/*.cu)
 cuda_add_library(plugin_list SHARED ${cuda_srcs})
 
 add_executable(camera ${cpp_srcs})
-# add_executable(selectColor src/camera.cpp src/selectColor.cpp)
+# add_executable(camera src/main.cpp src/pointcloud.cpp src/opencv.cpp src/camera.cpp src/application/app_yolo/yolo.cpp)
+
 # add_executable(seePLY src/camera.cpp src/seePLY.cpp)
 
 target_link_libraries(camera ${PCL_LIBRARIES} ${OpenCV_LIBS} k4a::k4a)
@@ -71,20 +72,20 @@ add_custom_target(
         COMMAND ./camera yolo
 )
 
-# 查看点云
-project(v2)
+# # 查看点云
+# project(v2)
 
-set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
+# set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
 
-find_package(k4a REQUIRED)
-find_package(PCL REQUIRED)
+# find_package(k4a REQUIRED)
+# find_package(PCL REQUIRED)
 
-include_directories(.)
-include_directories( 
-    ${PCL_INCLUDE_DIRS}
-)
-add_executable(v2 src/seePLY.cpp)
-target_link_libraries(v2 k4a::k4a)
-target_link_libraries(v2 
-    ${PCL_LIBRARIES}
-)
+# include_directories(.)
+# include_directories( 
+#     ${PCL_INCLUDE_DIRS}
+# )
+# add_executable(v2 src/seePLY.cpp)
+# target_link_libraries(v2 k4a::k4a)
+# target_link_libraries(v2 
+#     ${PCL_LIBRARIES}
+# )

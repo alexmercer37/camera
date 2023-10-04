@@ -14,7 +14,7 @@ std::shared_future<Yolo::BoxArray> prefuture;
 
 int main(int argc, char const *argv[])
 {
-  Camera camera;
+  camera camera;
   uint32_t device_count;
   k4a_device_configuration_t init;
   camera.init_kinect(device_count, device, capture, init);
@@ -22,15 +22,15 @@ int main(int argc, char const *argv[])
   //  TRT::compile(
   //      TRT::Mode::FP16,
   //      1,
-  //      "/home/tommy0929/Desktop/kinectCpp2/workspace/yolov5s.onnx",
+  //      "/home/ddxy/Downloads/kinect4/kinect/camera/workspace/yolov5s.onnx",
   //      "yolov5s.trtmodel");
   //  INFO("Done");
   auto yoloEngine = Yolo::create_infer("yolov5s.trtmodel", Yolo::Type::V5, 0, 0.8f, 0.5f);
   while (true)
   {
     auto start = std::chrono::system_clock::now();
-    camera.getpicture(capture, cv_depth, cv_color1, cv_infrared, cv_color, k4aTransformation);
-    // opencvs.getColor(cv_color, mask, color);
+    // camera.getpicture(capture, cv_depth, cv_color1, cv_infrared, cv_color, k4aTransformation);
+    // cameraCVs.getColor(cv_color, mask, color);
     // cv_depth.copyTo(depthCut, mask);
     // lclouds.getMaskAccordingToColor(cv_color, mask);
     // lclouds.getXYZPointCloud(k4aTransformation, k4aCalibration, depthCut);
@@ -48,7 +48,7 @@ int main(int argc, char const *argv[])
 
       int i = 0;
       int NUM = bboxes.size();
-      std::vector<opencv> opencvs(NUM);
+      std::vector<cameraCV> cameraCVs(NUM);
       std::vector<lcloud> lclouds(NUM);
       for (auto &box : bboxes)
       {
@@ -66,10 +66,10 @@ int main(int argc, char const *argv[])
           bottom = imgHeight;
 
         cv::Rect selection = cv::Rect(left, top, right - left, bottom - top); // yolo障碍物检测检测到的区域
-        opencvs[i].getColor(cv_color(selection), mask, color);
+        cameraCVs[i].getColor(cv_color(selection), mask, color);
         cv::Mat depthCut = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_16U);
-        depthFrame(selection).copyTo(depthCut(selection), mask);
-        lclouds[i].getMaskAccordingToColor(cv_color, mask);
+        cv_depth(selection).copyTo(depthCut(selection), mask);
+        // lclouds[i].getMaskAccordingToColor(cv_color, mask);
         lclouds[i].getXYZPointCloud(k4aTransformation, k4aCalibration, depthCut);
         lclouds[i].getPLY();
 
@@ -91,9 +91,9 @@ int main(int argc, char const *argv[])
     // cv::imshow("mask", mask);
 
     // cv::imshow("depth", depthCut);
-    // opencvs.getColor(cv_color, mask, color);
-    // opencvs.getContour(color, contour);
-    // opencvs.detectStraightLine(contour, plines, cv_color);
+    // cameraCVs.getColor(cv_color, mask, color);
+    // cameraCVs.getContour(color, contour);
+    // cameraCVs.detectStraightLine(contour, plines, cv_color);
     // cv::imshow("color", color);
     // cv::imshow("contour", contour);
     // cv::imshow("lines", cv_color);

@@ -13,6 +13,6 @@
 #include "app_yolo/multi_gpu.hpp"
 #include "app_yolo/yolo.hpp"
 
-extern cv::Mat rgbFrame, depthFrame, color, mask, contour;
+
 extern k4a::capture capture;
 extern std::vector<cv::Vec4f> plines;

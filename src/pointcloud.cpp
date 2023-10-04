@@ -149,7 +149,7 @@ void lcloud::getPLY()
     extract.setNegative(true);
     extract.filter(*cloudT);
     cout << sphere->size() << endl;
-    writer.write<PointXYZ>("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/SPHERE" + to_string(i) + ".ply", *sphere, false);
+    writer.write<PointXYZ>("/home/ddxy/Downloads/kinect4/kinect/camera/testcloud/SPHERE" + to_string(i) + ".ply", *sphere, false);
     cout  << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
     cout << "保存成功" << endl;
     i++;

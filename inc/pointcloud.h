@@ -31,14 +31,13 @@ private:
 
 public:
     lcloud();
-    // 通过颜色提取掩膜
+
     void getMaskAccordingToColor(const cv::Mat &cv_rgbimg, cv::Mat &mask);
-    // 获得点云图
-    void getXYZPointCloud(const k4a::transformation &k4aTransformation,
-                          const k4a::calibration &k4aCalibration,
-                          const cv::Mat &cv_depth);
-    // 提取最大垂直平面的距离
+
+    void getXYZPointCloud(const k4a::transformation &k4aTransformation, const k4a::calibration &k4aCalibration, const cv::Mat &cv_depth);
+
     void getPLY();
+
     void clearCloud();
 };
 #endif

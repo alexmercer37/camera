@@ -1,7 +1,7 @@
 
 #include "../inc/opencv.h"
 
-void cameraCV::getContour(cv::Mat &input, cv::Mat &output)
+void opencv::getContour(cv::Mat &input, cv::Mat &output)
 {
 	cv::medianBlur(input, median, 3);
 	cv::cvtColor(median, gray, cv::COLOR_BGRA2GRAY);
@@ -10,12 +10,12 @@ void cameraCV::getContour(cv::Mat &input, cv::Mat &output)
 	cv::Canny(lap8BitFrame, output, 50, 150, 3, false); // canny提取轮廓
 }
 
-void cameraCV::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
+void opencv::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
 {
 	cv::Mat dilate;
 	mask = cv::Mat::zeros(input.size(), CV_8UC1);
 	cv::cvtColor(input, input, cv::COLOR_BGR2HSV); // error
-	cv::inRange(input, cv::Scalar(hLow, sLow, vLow), cv::Scalar(hHigh, sHigh, vHigh), mask);
+	cv::inRange(input, cv::Scalar(0, 0, 211), cv::Scalar(180, 30, 255), mask);	 // 白色
 	cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5)); // 设置结构元
 	cv::morphologyEx(mask, mask, cv::MORPH_OPEN, element);						 // 开操作
 	cv::morphologyEx(mask, mask, cv::MORPH_CLOSE, element);						 // 闭操作
@@ -23,7 +23,7 @@ void cameraCV::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
 	cv::imshow("mask", mask);
 }
 
-void cameraCV::detectStraightLine(cv::Mat &contour, std::vector<cv::Vec4f> &plines, cv::Mat &output)
+void opencv::detectStraightLine(cv::Mat &contour, std::vector<cv::Vec4f> &plines, cv::Mat &output)
 {
 	cv::HoughLinesP(
 		contour, plines, 1, CV_PI / 180, 300, 200,

@@ -4,7 +4,7 @@ using namespace std;
 using namespace k4a;
 using namespace cv;
 
-void camera::init_kinect(uint32_t &device_count, k4a::device &device, k4a::capture &capture, k4a_device_configuration_t &init)
+void camera::init_kinect(k4a::capture &capture, k4a::transformation &k4aTransformation, k4a::calibration &k4aCalibration)
 {
   device_count = device::get_installed_count();
   if (device_count == 0)
@@ -30,6 +30,9 @@ void camera::init_kinect(uint32_t &device_count, k4a::device &device, k4a::captu
   device.start_imu();
   cout << "Done:start imu." << endl;
 
+  k4aCalibration = device.get_calibration(init.depth_mode, init.color_resolution);
+  k4aTransformation = k4a::transformation(k4aCalibration);
+
   int iAuto = 0;
   while (1)
   {
@@ -47,19 +50,10 @@ void camera::init_kinect(uint32_t &device_count, k4a::device &device, k4a::captu
     }
   }
 }
-void camera::getpicture(k4a::capture &capture, cv::Mat &cv_depth, cv::Mat &cv_color1, cv::Mat &cv_infrared, cv::Mat &cv_color, k4a::transformation &k4aTransformation)
+void camera::getpicture(k4a::capture &capture, cv::Mat &cv_color1, cv::Mat &cv_color, cv::Mat &cv_depth, k4a::transformation &k4aTransformation)
 {
-  k4a::device device;
   if (device.get_capture(&capture, std::chrono::milliseconds(0)))
   {
-    uint32_t device_count;
-    k4a_device_configuration_t init;
-
-    image k4a_color;
-    image k4a_depth;
-    image k4a_infrared;
-    image k4a_tf_depth;
-
     k4a_color = capture.get_color_image();
     k4a_depth = capture.get_depth_image();
     // k4a_infrared = capture.get_ir_image();
@@ -75,8 +69,22 @@ void camera::getpicture(k4a::capture &capture, cv::Mat &cv_depth, cv::Mat &cv_co
     // cv_infrared.convertTo(cv_infrared, CV_8U, 1);
   }
 }
+void camera::getpicture(k4a::capture &capture, cv::Mat &cv_color, cv::Mat &cv_depth, k4a::transformation &k4aTransformation)
+{
+  if (device.get_capture(&capture, std::chrono::milliseconds(100)))
+  {
+    k4a_color = capture.get_color_image();
+    k4a_depth = capture.get_depth_image();
+    k4a_tf_depth = k4aTransformation.depth_image_to_color_camera(k4a_depth);
+    cv_color = cv::Mat(k4a_color.get_height_pixels(), k4a_color.get_width_pixels(), CV_8UC4, (void *)k4a_color.get_buffer());
+    cv::cvtColor(cv_color, cv_color, cv::COLOR_BGRA2BGR);
+    cv_depth =
+        cv::Mat(k4a_tf_depth.get_height_pixels(), k4a_tf_depth.get_width_pixels(), CV_16U, (void *)k4a_tf_depth.get_buffer(), static_cast<size_t>(k4a_tf_depth.get_stride_bytes()));
+    // depthFrame.convertTo(depthFrame, CV_8U, 1);
+  }
+}
+
 void camera::stopCamera()
 {
-  k4a::device device;
   device.close();
 }

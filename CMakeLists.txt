@@ -73,7 +73,23 @@ add_custom_target(
 )
 
 # # 查看点云
-# project(v2)
+project(v2)
+
+set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
+
+find_package(k4a REQUIRED)
+find_package(PCL REQUIRED)
+
+include_directories(.)
+include_directories( 
+    ${PCL_INCLUDE_DIRS}
+)
+add_executable(v2 src1/seePLY.cpp)
+target_link_libraries(v2 k4a::k4a)
+target_link_libraries(v2 
+    ${PCL_LIBRARIES}
+)
+# project(can)
 
 # set(PCL_INCLUDE_DIRS  "/usr/local/include/pcl-1.13")
 
@@ -84,8 +100,7 @@ add_custom_target(
 # include_directories( 
 #     ${PCL_INCLUDE_DIRS}
 # )
-# add_executable(v2 src/seePLY.cpp)
-# target_link_libraries(v2 k4a::k4a)
-# target_link_libraries(v2 
+# add_executable(can src1/can_send.cpp)
+# target_link_libraries(can 
 #     ${PCL_LIBRARIES}
 # )

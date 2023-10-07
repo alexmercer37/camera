@@ -25,13 +25,10 @@ void cameraCV::getColor(const cv::Mat &input, cv::Mat &mask, cv::Mat &output)
 
 void cameraCV::detectStraightLine(cv::Mat &contour, std::vector<cv::Vec4f> &plines, cv::Mat &output)
 {
-	cv::HoughLinesP(
-		contour, plines, 1, CV_PI / 180, 300, 200,
-		40); // 霍夫直线检测，参数：8位单通道图像，cv::Vec4f,rho,theta,最小的直线长度，两段直线认为是一根直线的最小的距离
+	cv::HoughLinesP(contour, plines, 1, CV_PI / 180, 300, 200, 40); // 霍夫直线检测，参数：8位单通道图像，cv::Vec4f,rho,theta,最小的直线长度，两段直线认为是一根直线的最小的距离
 	for (size_t i = 0; i < plines.size(); i++)
 	{
 		cv::Vec4f hlines = plines[i];
-		cv::line(output, cv::Point(hlines[0], hlines[1]), cv::Point(hlines[2], hlines[3]), cv::Scalar(255, 0, 0), 3,
-				 cv::LINE_AA);
+		cv::line(output, cv::Point(hlines[0], hlines[1]), cv::Point(hlines[2], hlines[3]), cv::Scalar(0, 0, 255), 3, cv::LINE_AA);
 	}
 }

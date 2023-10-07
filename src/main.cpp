@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
   while (true)
   {
     auto start = std::chrono::system_clock::now();
-    camera.getpicture(capture, cv_color, cv_depth, k4aTransformation);
+    camera.getpicture(capture, cv_color, cv_color1, cv_depth, k4aTransformation);
     // cameraCVs.getColor(cv_color, mask, color);
     // cv_depth.copyTo(depthCut, mask);
     // lclouds.getMaskAccordingToColor(cv_color, mask);

@@ -69,7 +69,7 @@ add_custom_target(
         yolo
         DEPENDS camera
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/workspace
-        COMMAND ./camera yolo
+        COMMAND ../camera yolo
 )
 
 # # 查看点云
@@ -84,7 +84,7 @@ include_directories(.)
 include_directories( 
     ${PCL_INCLUDE_DIRS}
 )
-add_executable(v2 src1/seePLY.cpp)
+add_executable(v2 source/seePLY.cpp)
 target_link_libraries(v2 k4a::k4a)
 target_link_libraries(v2 
     ${PCL_LIBRARIES}

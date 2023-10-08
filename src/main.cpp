@@ -1,4 +1,4 @@
-#include "inc/main.h"
+#include "../inc/main.h"
 #include "tensorRT/builder/trt_builder.hpp"
 #include "application/app_yolo/yolo.hpp"
 #include "application/app_yolo/multi_gpu.hpp"
@@ -21,14 +21,14 @@ int main(int argc, char const *argv[])
   // TRT::compile(
   //     TRT::Mode::FP16,
   //     1,
-  //     "/home/ddxy/Downloads/kinect4/kinect/camera/workspace/best.onnx",
-  //     "best.trtmodel");
+  //     "/home/ddxy/Downloads/kinect/camera/workspace/best.onnx",
+  //     "ball.trtmodel");
   // INFO("Done");
-  auto yoloEngine = Yolo::create_infer("best.trtmodel", Yolo::Type::V5, 0, 0.8f, 0.5f);
+  auto yoloEngine = Yolo::create_infer("ball.trtmodel", Yolo::Type::V5, 0, 0.8f, 0.5f);
   while (true)
   {
     auto start = std::chrono::system_clock::now();
-    camera.getpicture(capture, cv_color, cv_color1, cv_depth, k4aTransformation);
+    camera.getpicture(capture, cv_color1, cv_color, cv_depth, k4aTransformation);
     // cameraCVs.getColor(cv_color, mask, color);
     // cv_depth.copyTo(depthCut, mask);
     // lclouds.getMaskAccordingToColor(cv_color, mask);

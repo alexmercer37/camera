@@ -52,7 +52,7 @@ void camera::init_kinect(k4a::capture &capture, k4a::transformation &k4aTransfor
 }
 void camera::getpicture(k4a::capture &capture, cv::Mat &cv_color1, cv::Mat &cv_color, cv::Mat &cv_depth, k4a::transformation &k4aTransformation)
 {
-  if (device.get_capture(&capture, std::chrono::milliseconds(0)))
+  if (device.get_capture(&capture, std::chrono::milliseconds(100)))
   {
     k4a_color = capture.get_color_image();
     k4a_depth = capture.get_depth_image();

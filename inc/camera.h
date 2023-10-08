@@ -17,7 +17,6 @@
 
 #include <cstdlib>
 
-#include "../inc/opencv.h"
 class camera
 {
 public:

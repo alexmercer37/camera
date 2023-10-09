@@ -69,11 +69,11 @@ void lcloud::getPLY()
   filt.setKeepOrganized(false);
   filt.setInputCloud(source);
   filt.filter(*source_downsampled);
-  if (source_downsampled->size() < 100)
-  {
-    // cout << "点云数目太少" << endl;
-    return;
-  }
+  // if (source_downsampled->size() < 100)
+  // {
+  //   // cout << "点云数目太少" << endl;
+  //   return;
+  // }
 
   start = clock();
   vg.setInputCloud(source_downsampled);
@@ -83,11 +83,11 @@ void lcloud::getPLY()
   // cout << "下采样：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
 
   getMinMax3D(*source_downsampled, min_pt, max_pt);
-  if (source_downsampled->size() < 70 || max_pt(1) < 40)
-  {
-    // cout << "下采样点云数目太少" << endl;
-    return;
-  }
+  // if (source_downsampled->size() < 70 || max_pt(1) < 40)
+  // {
+  //   // cout << "下采样点云数目太少" << endl;
+  //   return;
+  // }
 
   start = clock();
   sor.setInputCloud(source_downsampled);
@@ -96,11 +96,11 @@ void lcloud::getPLY()
   sor.filter(*source_downsampled);
   end = clock();
   // cout << "去除离群点：" << (double)(end - start) / CLOCKS_PER_SEC << endl;
-  if (source_downsampled->size() < 30)
-  {
-    // cout << "去离群和直通滤波后点云数目太少" << endl;
-    return;
-  }
+  // if (source_downsampled->size() < 30)
+  // {
+  //   // cout << "去离群和直通滤波后点云数目太少" << endl;
+  //   return;
+  // }
 
   start = clock();
   search::KdTree<PointXYZ>::Ptr tree(new search::KdTree<PointXYZ>());
@@ -159,11 +159,11 @@ void lcloud::getPLY()
     // count++;
   }
 
-  if (sphere->size() < 20)
-  {
-    cout << "球体点云数量太少" << endl;
-    return;
-  }
+  // if (sphere->size() < 20)
+  // {
+  //   cout << "球体点云数量太少" << endl;
+  //   return;
+  // }
   // if (count == 18)
   // {
   // // pcl::io::savePLYFile("/home/ddxy/Downloads/视觉部分/kinect/camera/testcloud/source_downsampled.ply", *source_downsampled);
@@ -171,7 +171,6 @@ void lcloud::getPLY()
   // cout << coefficients_sphere->values[0] << " " << coefficients_sphere->values[1] << " " << coefficients_sphere->values[2] << endl;
   //   cout << "保存成功" << endl;
   // }
-
 }
 void lcloud::clearCloud()
 {

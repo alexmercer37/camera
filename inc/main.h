@@ -3,7 +3,7 @@
 #include "camera.h"
 #include "../inc/opencv.h"
 #include <sys/types.h>
-#include <thread>
+#include </usr/include/c++/9/thread>
 #include <mutex>
 #include <condition_variable>
 #include "../inc/pointcloud.h"

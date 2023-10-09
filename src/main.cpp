@@ -2,7 +2,7 @@
 #include "tensorRT/builder/trt_builder.hpp"
 #include "application/app_yolo/yolo.hpp"
 #include "application/app_yolo/multi_gpu.hpp"
-
+using namespace std;
 cv::Mat cv_color, cv_color1, cv_depth, cv_infrared, depthFrameSizeAsRGB, rgbFrame, depthFrame;
 cv::Mat color, mask, contour;
 k4a::capture capture;
@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
   // TRT::compile(
   //     TRT::Mode::FP16,
   //     1,
-  //     "/home/ddxy/Downloads/kinect/camera/workspace/best.onnx",
+  //     "/home/ddxy/Downloads/kinect4/workspace/best.onnx",
   //     "ball.trtmodel");
   // INFO("Done");
   auto yoloEngine = Yolo::create_infer("ball.trtmodel", Yolo::Type::V5, 0, 0.8f, 0.5f);
@@ -47,8 +47,10 @@ int main(int argc, char const *argv[])
 
       int i = 0;
       int NUM = bboxes.size();
+      std::vector<lcloud> l(NUM);
       std::vector<cameraCV> cameraCVs(NUM);
       std::vector<lcloud> lclouds(NUM);
+      std::vector<thread> threads(NUM);
       for (auto &box : bboxes)
       {
         left = (int)box.left;
@@ -64,13 +66,26 @@ int main(int argc, char const *argv[])
         if (bottom > imgHeight)
           bottom = imgHeight;
 
-        cv::Rect selection = cv::Rect(left, top, right - left, bottom - top); // yolo障碍物检测检测到的区域
-        cameraCVs[i].getColor(cv_color(selection), mask, color);
+        cv::Rect select = cv::Rect(left, top, right - left, bottom - top); // yolo障碍物检测检测到的区域
+        cameraCVs[i].getColor(cv_color(select), mask, color);
         cv::Mat depthCut = cv::Mat::zeros(cv::Size(imgWidth, imgHeight), CV_16U);
-        cv_depth(selection).copyTo(depthCut(selection), mask);
+        cv_depth(select).copyTo(depthCut(select), mask);
         // lclouds[i].getMaskAccordingToColor(cv_color, mask);
         lclouds[i].getXYZPointCloud(k4aTransformation, k4aCalibration, depthCut);
-        lclouds[i].getPLY();
+        int l = 10;
+        for (i = 0; i < l; i++)
+          thread t[l];
+        {
+          threads[i] = thread(&lcloud::getPLY, i);
+          // threads[i] = thread(&lcloud::getPLY, &lclouds[i], ref(l[i]), cv_color(select));
+          // threads[i] = thread(&lcloud::getPLY, ref(l), cv_color(select));
+          // thread t(&lcloud::getPLY, &node, 28);
+          // lclouds[i].getPLY();
+        }
+        for (int i = 0; i < l; i++)
+        {
+          threads[i].join();
+        }
 
         uint8_t r, g, b;
         std::tie(r, g, b) = iLogger::random_color(box.class_label);
@@ -79,6 +94,10 @@ int main(int argc, char const *argv[])
         lclouds[i].clearCloud();
         i++;
       }
+      for (auto &entry : threads)
+        entry.join();
+      threads.clear();
+
       cv::imshow("rgb", cv_color);
       cv::imshow("depth", cv_depth);
       // cv::waitKey(1);
